@@ -1,0 +1,199 @@
+openapi: 3.0.3
+info:
+  title: Swagger Flask Auth - OpenAPI 3.0
+  description: |-
+    This is a flask Auth server on the OpenAPI 3.0 specification.  You can find out more about
+    Swagger at [https://swagger.io](https://swagger.io). In the initial iteration of the project, it is capable of doing the following:
+      - basic signup/authentication;
+      - monitor anonymous users' activity (if the activity is coming from different IP addresses - these are different users);
+      - show the users' (both anonymous and registered) info and activity stats (number of interactions with the application).
+    
+    Some useful links:
+    - [GitHub repository](https://github.com/swagger-api/swagger-petstore)
+  termsOfService: http://swagger.io/terms/
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  version: 1.0.11
+externalDocs:
+  description: Find out more about Swagger
+  url: http://swagger.io
+servers:
+  - url: http://127.0.0.1:5000
+tags:
+  - name: home
+    description: Generic Home page
+  - name: auth
+    description: Authentication and Register
+  - name: users
+    description: User listing and stats
+paths:
+  /:
+    get:
+      tags:
+        - home
+      summary: Generic Home Page view
+      description: Get the Home Page view and default response
+      responses:
+        '200':
+          description: Home page response
+          content:
+            application/json:
+              example:
+                data: Home page
+  /auth/signup:
+    post:
+      tags:
+        - auth
+      summary: Register a new user
+      description: Register a new account in the application
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                password:
+                  type: string
+      responses:
+        '201':
+          description: Successful user creation
+          content:
+            application/json:
+              example:
+                success: "User created"
+        '400':
+          description: User with provided credentials already exists
+          content:
+            application/json:
+              example:
+                error: User already exists
+  /auth/login:
+    post:
+      tags:
+        - auth
+      summary: Log in to the system
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                password:
+                  type: string
+      responses:
+        '400':
+          description: User with the specified credentials does not exist/credentials are not valid
+          content:
+            application/json:
+              example:
+                error: User does not exist
+
+        '200':
+          description: User successfully logs in
+          content:
+            application/json:
+              example:
+                success: User logged in
+
+  /auth/logout:
+    post:
+      tags:
+        - auth
+      summary: Log out of the system
+      description: Log out of the current authenticated user's account
+      responses:
+        '200':
+          description: User successfully logs out
+          content:
+            application/json:
+              example:
+                success: User logged out
+
+        '400':
+          description: User was not logged in
+          content:
+            application/json:
+              example:
+                error: User is not logged in
+
+
+  /users/authenticated-list:
+    get:
+      tags:
+        - users
+      summary: List all registered users
+      description: Get email and number of interactions of all registered users
+      responses:
+        '200':
+          description: All registered users
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+  /users/anonymous-list:
+    get:
+      tags:
+        - users
+      summary: List all anonymous users
+      description: Get IP addresses and number of interactions of all anonymous users
+      responses:
+        '200':
+          description: All anonymous users
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AnonymousUser"
+  /users/current-user:
+    get:
+      tags:
+        - users
+      summary: Show info about the current user
+      description: Show info about the current user (either authenticated or anonymous)
+      responses:
+        '200':
+          description: Current User info
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+    
+
+
+components:
+  schemas:
+    AnonymousUser:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 3
+        ipAddress:
+          type: string
+          description: Anonymous User's IP Address
+          example: 122.0.0.2.13
+        interactionsCount:
+          type: integer
+          format: int64
+          example: 5
+          description: Number of times when the User interacted with an application
+          
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 5
+        email:
+          type: string
+          example: mail@mail.com
+        password:
+          type: string

@@ -1,0 +1,33 @@
+# Virtual environment
+env/
+
+# Compiled Python files
+*.pyc
+__pycache__/
+
+# Environment variables file
+.env
+db.env
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Logs
+*.log
+
+# Local development files
+.DS_Store
+.dockerignore
+
+# Database files
+*.db
+*.sqlite
+
+# Testing files
+.coverage
+.tox/
+nosetests.xml
+nosetests.log
